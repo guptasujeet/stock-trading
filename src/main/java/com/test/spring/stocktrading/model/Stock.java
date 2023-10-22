@@ -12,5 +12,7 @@ import lombok.NoArgsConstructor;
 public class Stock {
 
     private String name;
+    private double price;
+    private String currency;
 
 }

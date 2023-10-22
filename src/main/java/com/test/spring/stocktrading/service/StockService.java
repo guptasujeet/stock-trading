@@ -3,8 +3,8 @@ package com.test.spring.stocktrading.service;
 import com.test.spring.stocktrading.model.Stock;
 import com.test.spring.stocktrading.repository.StockRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 public class StockService {
@@ -16,15 +16,15 @@ public class StockService {
     }
 
 
-    public Optional<Stock> getOneStock(String id) {
+    public Mono<Stock> getOneStock(String id) {
         return stockRepository.findById(id);
     }
 
-    public Iterable<Stock> getAllStocks() {
+    public Flux<Stock> getAllStocks() {
         return stockRepository.findAll();
     }
 
-    public Stock createStock(Stock stock) {
+    public Mono<Stock> createStock(Stock stock) {
         return stockRepository.save(stock);
     }
 }

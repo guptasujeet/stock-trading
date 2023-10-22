@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Optional;
-
 @RestController
 @RequestMapping("/stocks")
 public class StocksController {
@@ -20,17 +18,17 @@ public class StocksController {
 
 
     @GetMapping("/{id}")
-    public Optional<Stock> getOneStock(@PathVariable String id) {
+    public Mono<Stock> getOneStock(@PathVariable String id) {
         return stockService.getOneStock(id);
     }
 
     @GetMapping
-    public Iterable<Stock> getAllStocks() {
+    public Flux<Stock> getAllStocks() {
         return stockService.getAllStocks();
     }
 
     @PostMapping
-    public Stock createStock(@RequestBody Stock stock) {
+    public Mono<Stock> createStock(@RequestBody Stock stock) {
         return stockService.createStock(stock);
     }
 
