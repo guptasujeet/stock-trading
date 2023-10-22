@@ -22,7 +22,7 @@ public class StockResponse {
     private BigDecimal price;
     private String currency;
 
-    public StockResponse fromModel(Stock stock) {
+    public static StockResponse fromModel(Stock stock) {
         return StockResponse.builder()
                 .id(stock.getId())
                 .name(stock.getName())

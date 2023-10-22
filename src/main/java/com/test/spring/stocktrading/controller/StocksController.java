@@ -1,6 +1,7 @@
 package com.test.spring.stocktrading.controller;
 
-import com.test.spring.stocktrading.model.Stock;
+import com.test.spring.stocktrading.dto.StockRequest;
+import com.test.spring.stocktrading.dto.StockResponse;
 import com.test.spring.stocktrading.service.StockService;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -18,17 +19,17 @@ public class StocksController {
 
 
     @GetMapping("/{id}")
-    public Mono<Stock> getOneStock(@PathVariable String id) {
+    public Mono<StockResponse> getOneStock(@PathVariable String id) {
         return stockService.getOneStock(id);
     }
 
     @GetMapping
-    public Flux<Stock> getAllStocks() {
+    public Flux<StockResponse> getAllStocks() {
         return stockService.getAllStocks();
     }
 
     @PostMapping
-    public Mono<Stock> createStock(@RequestBody Stock stock) {
+    public Mono<StockResponse> createStock(@RequestBody StockRequest stock) {
         return stockService.createStock(stock);
     }
 
