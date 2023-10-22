@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -13,7 +15,7 @@ public class Stock {
 
     private String id;
     private String name;
-    private double price;
+    private BigDecimal price;
     private String currency;
 
 }
