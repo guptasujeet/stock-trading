@@ -1,28 +1,37 @@
 package com.test.spring.stocktrading.controller;
 
 import com.test.spring.stocktrading.model.Stock;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.test.spring.stocktrading.service.StockService;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/stocks")
 public class StocksController {
 
+    private final StockService stockService;
+
+    public StocksController(StockService stockService) {
+        this.stockService = stockService;
+    }
+
+
     @GetMapping("/{id}")
-    public Mono<Stock> getOneStock(@PathVariable String id) {
-        return Mono.just(Stock.builder()
-                .name("Stock-" + id)
-                .build());
+    public Optional<Stock> getOneStock(@PathVariable String id) {
+        return stockService.getOneStock(id);
     }
 
     @GetMapping
-    public Flux<Stock> getAllStocks() {
-        return Flux.range(1, 5)
-                .map(i -> Stock.builder().name("Stock-" + i).build());
+    public Iterable<Stock> getAllStocks() {
+        return stockService.getAllStocks();
+    }
+
+    @PostMapping
+    public Stock createStock(@RequestBody Stock stock) {
+        return stockService.createStock(stock);
     }
 
 }
