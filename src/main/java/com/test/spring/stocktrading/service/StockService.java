@@ -2,6 +2,7 @@ package com.test.spring.stocktrading.service;
 
 import com.test.spring.stocktrading.dto.StockRequest;
 import com.test.spring.stocktrading.dto.StockResponse;
+import com.test.spring.stocktrading.exception.StockNotFoundException;
 import com.test.spring.stocktrading.repository.StockRepository;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -19,7 +20,8 @@ public class StockService {
 
     public Mono<StockResponse> getOneStock(String id) {
         return stockRepository.findById(id)
-                .map(StockResponse::fromModel);
+                .map(StockResponse::fromModel)
+                .switchIfEmpty(Mono.error(new StockNotFoundException("Stock not found with id: " + id)));
     }
 
     public Flux<StockResponse> getAllStocks() {
@@ -27,8 +29,11 @@ public class StockService {
                 .map(StockResponse::fromModel);
     }
 
-    public Mono<StockResponse> createStock(StockRequest stock) {
-        return stockRepository.save(stock.toModel())
-                .map(StockResponse::fromModel);
+    public Mono<StockResponse> createStock(StockRequest stockRequest) {
+        return Mono.just(stockRequest)
+                .map(StockRequest::toModel)
+                .flatMap(stockRepository::save)
+                .map(StockResponse::fromModel)
+                .onErrorReturn(StockResponse.builder().build());//fallback
     }
 }
