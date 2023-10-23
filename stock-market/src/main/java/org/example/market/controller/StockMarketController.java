@@ -14,8 +14,8 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class StockMarketController {
 
-    private CurrencyRateService currencyRateService;
-    private StockPublishService stockPublishService;
+    private final CurrencyRateService currencyRateService;
+    private final StockPublishService stockPublishService;
 
     public StockMarketController(CurrencyRateService currencyRateService, StockPublishService stockPublishService) {
         this.currencyRateService = currencyRateService;

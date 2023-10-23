@@ -19,8 +19,8 @@ public class StocksController {
     }
 
 
-    @GetMapping("/{id}/{currency}}")
-    public Mono<StockResponse> getOneStock(@PathVariable String id, @PathVariable(required = false) String currency) {
+    @GetMapping("/{id}")
+    public Mono<StockResponse> getOneStock(@PathVariable String id, @RequestParam String currency) {
         currency = StringUtils.isBlank(currency) ? "INR" : currency;
         return stockService.getOneStock(id, currency);
     }
