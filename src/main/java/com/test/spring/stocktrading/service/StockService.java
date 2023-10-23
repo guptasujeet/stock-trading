@@ -4,11 +4,13 @@ import com.test.spring.stocktrading.dto.StockRequest;
 import com.test.spring.stocktrading.dto.StockResponse;
 import com.test.spring.stocktrading.exception.StockNotFoundException;
 import com.test.spring.stocktrading.repository.StockRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
+@Slf4j
 public class StockService {
 
     private final StockRepository stockRepository;
@@ -34,6 +36,10 @@ public class StockService {
                 .map(StockRequest::toModel)
                 .flatMap(stockRepository::save)
                 .map(StockResponse::fromModel)
-                .onErrorReturn(StockResponse.builder().build());//fallback
+                //.onErrorReturn(StockResponse.builder().build());//fallback
+                .onErrorResume(ex -> {
+                    log.warn("Could not create stock: {} , Exception :", stockRequest, ex);
+                    return Mono.just(StockResponse.builder().build());
+                });
     }
 }
