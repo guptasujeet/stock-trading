@@ -47,5 +47,11 @@ subprojects {
 
 }
 
+project(':common'){
+}
 
-project(':stock-server'){}
+project(':stock-server'){
+    dependencies {
+        implementation project(':common')
+    }
+}
