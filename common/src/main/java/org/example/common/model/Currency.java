@@ -1,4 +1,4 @@
-package org.example.market.model;
+package org.example.common.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

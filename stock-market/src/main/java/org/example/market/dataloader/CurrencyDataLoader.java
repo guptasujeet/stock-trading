@@ -2,7 +2,7 @@ package org.example.market.dataloader;
 
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import org.example.market.model.Currency;
+import org.example.common.model.Currency;
 import org.example.market.repository.CurrencyRepository;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
