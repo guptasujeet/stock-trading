@@ -1,4 +1,4 @@
-package com.test.spring.stocktrading.model;
+package org.example.common.model;
 
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;

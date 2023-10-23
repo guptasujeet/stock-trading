@@ -1,10 +1,10 @@
 package com.test.spring.stocktrading.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.test.spring.stocktrading.model.Stock;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.common.model.Stock;
 
 import java.math.BigDecimal;
 

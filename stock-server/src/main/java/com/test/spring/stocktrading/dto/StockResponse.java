@@ -1,11 +1,12 @@
 package com.test.spring.stocktrading.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.test.spring.stocktrading.model.Stock;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.common.dto.StockPublishResponse;
+import org.example.common.model.Stock;
 
 import java.math.BigDecimal;
 
@@ -28,6 +29,15 @@ public class StockResponse {
                 .name(stock.getName())
                 .price(stock.getPrice())
                 .currency(stock.getCurrency())
+                .build();
+    }
+
+    public static StockResponse fromStockPublishResponse(StockPublishResponse response) {
+        return StockResponse.builder()
+                .id(response.getId())
+                .name(response.getName())
+                .price(response.getPrice())
+                .currency(response.getCurrency())
                 .build();
     }
 

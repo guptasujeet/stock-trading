@@ -1,4 +1,4 @@
-package com.test.spring.stocktrading.repository;
+package org.example.market.repository;
 
 import org.example.common.model.Stock;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
