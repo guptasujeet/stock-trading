@@ -20,6 +20,14 @@ allprojects {
     	mavenCentral()
     }
 
+    bootJar {
+        enabled = false
+    }
+
+    jar {
+        enabled = true
+    }
+
 }
 
 
@@ -51,6 +59,12 @@ project(':common'){
 }
 
 project(':stock-server'){
+    dependencies {
+        implementation project(':common')
+    }
+}
+
+project(':stock-market'){
     dependencies {
         implementation project(':common')
     }
