@@ -9,5 +9,4 @@ public class StockMarketMain {
     public static void main(String[] args) {
         SpringApplication.run(StockMarketMain.class, args);
     }
-
 }

@@ -3,6 +3,7 @@ package com.test.spring.stocktrading.controller;
 import com.test.spring.stocktrading.dto.StockRequest;
 import com.test.spring.stocktrading.dto.StockResponse;
 import com.test.spring.stocktrading.service.StockService;
+import io.micrometer.common.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -18,9 +19,10 @@ public class StocksController {
     }
 
 
-    @GetMapping("/{id}")
-    public Mono<StockResponse> getOneStock(@PathVariable String id) {
-        return stockService.getOneStock(id);
+    @GetMapping("/{id}/{currency}}")
+    public Mono<StockResponse> getOneStock(@PathVariable String id, @PathVariable(required = false) String currency) {
+        currency = StringUtils.isBlank(currency) ? "INR" : currency;
+        return stockService.getOneStock(id, currency);
     }
 
     @GetMapping
