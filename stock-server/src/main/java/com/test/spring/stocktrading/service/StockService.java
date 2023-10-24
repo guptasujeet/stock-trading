@@ -3,11 +3,11 @@ package com.test.spring.stocktrading.service;
 import com.test.spring.stocktrading.client.StockMarketClient;
 import com.test.spring.stocktrading.dto.StockRequest;
 import com.test.spring.stocktrading.dto.StockResponse;
-import com.test.spring.stocktrading.exception.StockCreationException;
 import com.test.spring.stocktrading.exception.StockNotFoundException;
 import com.test.spring.stocktrading.repository.StockRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.example.common.dto.StockPublishRequest;
+import org.example.common.exception.StockCreationException;
 import org.example.common.model.Stock;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,6 +57,7 @@ public class StockService {
                 .flatMap(stockRepository::save)
                 .map(StockPublishRequest::fromModel)
                 .flatMap(stockMarketClient::publishStockInfo)
+                .switchIfEmpty(Mono.error(new StockCreationException("Unable to publish stock")))
                 .map(StockResponse::fromStockPublishResponse)
                 .onErrorMap(ex -> new StockCreationException(ex.getMessage()));
     }

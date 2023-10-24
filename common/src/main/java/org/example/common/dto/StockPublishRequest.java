@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.example.common.model.Stock;
 
 import java.math.BigDecimal;
@@ -27,6 +28,10 @@ public class StockPublishRequest {
     }
 
     public Stock toStock() {
+        if (StringUtils.contains(this.name, "-")) {
+            //simulate some exception
+            throw new IllegalArgumentException("- Not allowed in the name : " + this.name);
+        }
         return Stock.builder()
                 .name(this.name)
                 .price(this.price)

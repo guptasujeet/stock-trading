@@ -4,7 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.common.dto.CurrencyRate;
 import org.example.common.dto.StockPublishRequest;
 import org.example.common.dto.StockPublishResponse;
+import org.example.common.exception.StockCreationException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ProblemDetail;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -35,6 +38,12 @@ public class StockMarketClient {
                 .uri("/stocks/publish")
                 .body(BodyInserters.fromValue(stockPublishRequest))
                 .retrieve()
+                .onStatus(HttpStatusCode::isError, (res) -> {
+                    return res.bodyToMono(ProblemDetail.class)
+                            .switchIfEmpty(Mono.error(new StockCreationException("Error during stock creation")))
+                            .flatMap(problemDetail -> Mono.error(new StockCreationException(problemDetail.getDetail())));
+
+                })
                 .bodyToMono(StockPublishResponse.class)
                 .doFirst(() -> log.info("Request to Stock publish made"))
                 .doOnNext(st -> log.info("Stock received -> {}", st));

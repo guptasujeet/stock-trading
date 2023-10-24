@@ -1,4 +1,4 @@
-package com.test.spring.stocktrading.exception;
+package org.example.common.exception;
 
 public class StockCreationException extends RuntimeException {
 

@@ -1,5 +1,6 @@
 package com.test.spring.stocktrading.exception;
 
+import org.example.common.exception.StockCreationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
