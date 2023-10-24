@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.ProblemDetail;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
@@ -21,8 +22,7 @@ import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
 
 @WebFluxTest(controllers = StocksController.class)
@@ -71,6 +71,28 @@ public class StockControllerIntegrationTest {
         assertEquals(expectedCurrency, stockResponse.getCurrency());
         assertEquals(new BigDecimal("834.0"), stockResponse.getPrice());
         assertEquals(TEST_NAME, stockResponse.getName());
+    }
+
+    @Test
+    public void shouldReturnNotFoundWhenGetOneStock_NotPresent() {
+        //given
+        Mockito.when(stockRepository.findById(eq(TEST_ID))).thenReturn(Mono.empty());
+
+        String expectedCurrency = "INR";
+
+        //when
+        ProblemDetail problemDetail = webTestClient.get()
+                .uri(uriBuilder -> uriBuilder.path("/stocks/{id}").queryParam("currency", expectedCurrency).build(TEST_ID))
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody(ProblemDetail.class)
+                .returnResult()
+                .getResponseBody();
+
+        //then
+        assertNotNull(problemDetail);
+        assertNotNull(problemDetail.getDetail());
+        assertTrue(problemDetail.getDetail().contains("Stock not found"));
     }
 
 
