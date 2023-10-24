@@ -5,6 +5,7 @@ import com.test.spring.stocktrading.dto.StockRequest;
 import com.test.spring.stocktrading.repository.StockRepository;
 import org.example.common.dto.StockPublishRequest;
 import org.example.common.dto.StockPublishResponse;
+import org.example.common.exception.StockCreationException;
 import org.example.common.model.Stock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,9 +47,8 @@ public class StockServiceTest {
     @Test
     public void shouldCreateStock() {
         //given
-        StockRequest stockRequest = StockRequest.builder().name(TEST_NAME).price(TEST_PRICE).currency(TEST_CURRENCY).build();
-        Stock stock = stockRequest.toModel();
-        stock.setId(TEST_ID);
+        StockRequest stockRequest = buildTestStockRequest();
+        Stock stock = buildStockFromStockRequest(stockRequest);
 
         StockPublishResponse stockPublishResponse = StockPublishResponse.fromModel(stock);
         //when
@@ -62,9 +62,31 @@ public class StockServiceTest {
                     assertEquals(TEST_CURRENCY, stockResponse.getCurrency());
                     assertEquals(TEST_PRICE, stockResponse.getPrice());
                     assertEquals(TEST_NAME, stockResponse.getName());
-                })
-                .verifyComplete();
+                }).verifyComplete();
 
+    }
+
+    @Test
+    public void shouldThrowStockCreationException_WhenUnableToSave() {
+        //given
+        StockRequest stockRequest = buildTestStockRequest();
+        Stock stock = buildStockFromStockRequest(stockRequest);
+
+        //when
+        Mockito.when(stockRepository.save(any(Stock.class))).thenThrow(new RuntimeException("Connection lost"));
+        StepVerifier.create(stockService.createStock(stockRequest))
+                //then
+                .verifyError(StockCreationException.class);
+    }
+
+    private StockRequest buildTestStockRequest() {
+        return StockRequest.builder().name(TEST_NAME).price(TEST_PRICE).currency(TEST_CURRENCY).build();
+    }
+
+    private Stock buildStockFromStockRequest(StockRequest stockRequest) {
+        Stock stock = stockRequest.toModel();
+        stock.setId(TEST_ID);
+        return stock;
     }
 
 }
