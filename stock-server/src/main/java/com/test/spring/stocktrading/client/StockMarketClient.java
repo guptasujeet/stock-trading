@@ -10,9 +10,13 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.ClientRequest;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.UUID;
 
 @Component
 @Slf4j
@@ -21,7 +25,14 @@ public class StockMarketClient {
     private final WebClient webClient;
 
     public StockMarketClient(@Value("${clients.stockMarket.baseUrl}") String baseUrl) {
-        this.webClient = WebClient.builder().baseUrl(baseUrl).build();
+        this.webClient = WebClient.builder()
+                .baseUrl(baseUrl)
+                .filter(ExchangeFilterFunction.ofRequestProcessor(
+                        request -> Mono.just(ClientRequest.from(request)
+                                .header("X-Trace-Id", UUID.randomUUID().toString())
+                                .build())
+                ))
+                .build();
     }
 
     public Flux<CurrencyRate> getCurrencyRates() {
