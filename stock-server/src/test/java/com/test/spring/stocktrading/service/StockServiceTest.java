@@ -70,10 +70,22 @@ public class StockServiceTest {
     public void shouldThrowStockCreationException_WhenUnableToSave() {
         //given
         StockRequest stockRequest = buildTestStockRequest();
+
+        //when
+        Mockito.when(stockRepository.save(any(Stock.class))).thenThrow(new RuntimeException("DB connection lost"));
+        StepVerifier.create(stockService.createStock(stockRequest))
+                //then
+                .verifyError(StockCreationException.class);
+    }
+
+    @Test
+    public void shouldThrowStockCreationException_WhenStockMarketFailed() {
+        //given
+        StockRequest stockRequest = buildTestStockRequest();
         Stock stock = buildStockFromStockRequest(stockRequest);
 
         //when
-        Mockito.when(stockRepository.save(any(Stock.class))).thenThrow(new RuntimeException("Connection lost"));
+        Mockito.when(stockMarketClient.publishStockInfo(any(StockPublishRequest.class))).thenReturn(Mono.error(new RuntimeException("Not able to connect to market service")));
         StepVerifier.create(stockService.createStock(stockRequest))
                 //then
                 .verifyError(StockCreationException.class);
